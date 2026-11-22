@@ -14,11 +14,11 @@
     "typecheck": "next typegen && tsc --noEmit",
     "db:migrate": "kysely migrate latest",
     "db:migrate:down": "kysely migrate down",
-    "db:types": "kysely-codegen --dialect postgres --date-parser string --out-file src/db/types.ts && prettier --write src/db/types.ts"
+    "db:types": "kysely-codegen --dialect postgres --date-parser string --env-file .env.local --out-file src/db/types.ts && prettier --write src/db/types.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
-    "kysely": "^0.29.8",
+    "kysely": "^0.29.9",
     "kysely-neon": "^3.0.0",
     "next": "^16.4.6",
     "react": "^19.3.1",
