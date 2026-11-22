@@ -17,6 +17,16 @@ export interface Players {
   registered_at: Generated<Timestamp>;
 }
 
+export interface SinglesGames {
+  first_server_id: string;
+  first_server_points: number;
+  id: Generated<number>;
+  played_at: Generated<Timestamp>;
+  second_server_id: string;
+  second_server_points: number;
+}
+
 export interface DB {
   players: Players;
+  singles_games: SinglesGames;
 }
