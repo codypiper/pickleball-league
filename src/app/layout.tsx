@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Track games, stats, and standings for your pickleball league",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+const RootLayout = async ({ children }: LayoutProps<"/">) => {
   return (
     <html
       lang="en"
@@ -26,4 +26,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
-}
+};
+
+export default RootLayout;

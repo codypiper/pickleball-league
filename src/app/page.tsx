@@ -1,7 +1,9 @@
+import Cell from "@/components/table/Cell";
+import Header from "@/components/table/Header";
 import { getSinglesLeaderboard } from "@/db/queries/leaderboard";
 import { formatRecord, formatSigned, formatWinPct } from "@/lib/leaderboard";
 
-export default async function Home() {
+const Home = async () => {
   const rows = await getSinglesLeaderboard();
 
   return (
@@ -19,15 +21,15 @@ export default async function Home() {
                 <th scope="col" className="px-4 py-3 font-medium">
                   Player
                 </th>
-                <NumericHeader>Win</NumericHeader>
-                <NumericHeader>Loss</NumericHeader>
-                <NumericHeader>Win %</NumericHeader>
-                <NumericHeader>Points For</NumericHeader>
-                <NumericHeader>Points Against</NumericHeader>
-                <NumericHeader>Point Differential</NumericHeader>
-                <NumericHeader>W/L Streak</NumericHeader>
-                <NumericHeader>First Serve</NumericHeader>
-                <NumericHeader>Second Serve</NumericHeader>
+                <Header>Win</Header>
+                <Header>Loss</Header>
+                <Header>Win %</Header>
+                <Header>Points For</Header>
+                <Header>Points Against</Header>
+                <Header>Point Differential</Header>
+                <Header>Streak</Header>
+                <Header>First Serve</Header>
+                <Header>Second Serve</Header>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -36,15 +38,13 @@ export default async function Home() {
                   <th scope="row" className="px-4 py-3 text-left font-medium">
                     {row.playerId}
                   </th>
-                  <NumericCell>{row.wins}</NumericCell>
-                  <NumericCell>{row.losses}</NumericCell>
-                  <NumericCell>{formatWinPct(row.winPct)}</NumericCell>
-                  <NumericCell>{row.pointsFor}</NumericCell>
-                  <NumericCell>{row.pointsAgainst}</NumericCell>
-                  <NumericCell>
-                    {formatSigned(row.pointDifferential)}
-                  </NumericCell>
-                  <NumericCell
+                  <Cell>{row.wins}</Cell>
+                  <Cell>{row.losses}</Cell>
+                  <Cell>{formatWinPct(row.winPct)}</Cell>
+                  <Cell>{row.pointsFor}</Cell>
+                  <Cell>{row.pointsAgainst}</Cell>
+                  <Cell>{formatSigned(row.pointDifferential)}</Cell>
+                  <Cell
                     className={
                       row.streak > 0
                         ? "text-green-600 dark:text-green-400"
@@ -52,9 +52,9 @@ export default async function Home() {
                     }
                   >
                     {formatSigned(row.streak)}
-                  </NumericCell>
-                  <NumericCell>{formatRecord(row.firstServe)}</NumericCell>
-                  <NumericCell>{formatRecord(row.secondServe)}</NumericCell>
+                  </Cell>
+                  <Cell>{formatRecord(row.firstServe)}</Cell>
+                  <Cell>{formatRecord(row.secondServe)}</Cell>
                 </tr>
               ))}
             </tbody>
@@ -63,26 +63,6 @@ export default async function Home() {
       )}
     </main>
   );
-}
+};
 
-function NumericHeader({ children }: { children: React.ReactNode }) {
-  return (
-    <th scope="col" className="px-4 py-3 text-right font-medium">
-      {children}
-    </th>
-  );
-}
-
-function NumericCell({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <td className={`px-4 py-3 text-right tabular-nums ${className}`}>
-      {children}
-    </td>
-  );
-}
+export default Home;

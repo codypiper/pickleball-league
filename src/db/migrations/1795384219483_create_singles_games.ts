@@ -5,7 +5,7 @@ import { type Kysely, sql } from "kysely";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDb = Kysely<any>;
 
-export async function up(db: AnyDb): Promise<void> {
+export const up = async function up(db: AnyDb): Promise<void> {
   await db.schema
     .createTable("singles_games")
     .addColumn("id", "integer", (col) =>
@@ -75,8 +75,8 @@ export async function up(db: AnyDb): Promise<void> {
     .on("singles_games")
     .column("played_at")
     .execute();
-}
+};
 
-export async function down(db: AnyDb): Promise<void> {
+export const down = async function down(db: AnyDb): Promise<void> {
   await db.schema.dropTable("singles_games").execute();
-}
+};

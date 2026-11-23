@@ -5,7 +5,7 @@ import { type Kysely, sql } from "kysely";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDb = Kysely<any>;
 
-export async function up(db: AnyDb): Promise<void> {
+export const up = async function up(db: AnyDb): Promise<void> {
   // citext is case-insensitive text: it keeps the capitalization a player
   // chose, but "Cody" and "cody" compare as equal, so they can't both exist
   // and lookups match either way.
@@ -21,9 +21,9 @@ export async function up(db: AnyDb): Promise<void> {
       col.notNull().defaultTo(sql`now()`),
     )
     .execute();
-}
+};
 
-export async function down(db: AnyDb): Promise<void> {
+export const down = async function down(db: AnyDb): Promise<void> {
   // The citext extension is left installed; other tables may come to use it.
   await db.schema.dropTable("players").execute();
-}
+};

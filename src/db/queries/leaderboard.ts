@@ -1,12 +1,12 @@
-import { cacheLife } from "next/cache";
-import { db } from "@/db";
+import db from "@/db";
 import { buildLeaderboard } from "@/lib/leaderboard";
+import { cacheLife } from "next/cache";
 
 /**
  * The singles leaderboard. Cached and refreshed about once a minute, so new
  * games show up shortly after they're entered.
  */
-export async function getSinglesLeaderboard() {
+export const getSinglesLeaderboard = async () => {
   "use cache";
   cacheLife("minutes");
 
@@ -23,4 +23,4 @@ export async function getSinglesLeaderboard() {
     .execute();
 
   return buildLeaderboard(games);
-}
+};
