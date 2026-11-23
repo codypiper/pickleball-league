@@ -1,11 +1,11 @@
 import { getSinglesLeaderboard } from "@/db/queries/leaderboard";
-import { formatSigned, formatWinPct } from "@/lib/leaderboard";
+import { formatRecord, formatSigned, formatWinPct } from "@/lib/leaderboard";
 
 export default async function Home() {
   const rows = await getSinglesLeaderboard();
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
       <h1 className="text-3xl font-bold tracking-tight">Leaderboard</h1>
       <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Singles</p>
 
@@ -26,6 +26,8 @@ export default async function Home() {
                 <NumericHeader>Points Against</NumericHeader>
                 <NumericHeader>Point Differential</NumericHeader>
                 <NumericHeader>W/L Streak</NumericHeader>
+                <NumericHeader>First Serve</NumericHeader>
+                <NumericHeader>Second Serve</NumericHeader>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -51,6 +53,8 @@ export default async function Home() {
                   >
                     {formatSigned(row.streak)}
                   </NumericCell>
+                  <NumericCell>{formatRecord(row.firstServe)}</NumericCell>
+                  <NumericCell>{formatRecord(row.secondServe)}</NumericCell>
                 </tr>
               ))}
             </tbody>

@@ -15,7 +15,13 @@ export type LeaderboardRow = {
   pointDifferential: number;
   /** Positive for a winning streak, negative for a losing streak. */
   streak: number;
+  /** Record in games where the player served first. */
+  firstServe: WinLoss;
+  /** Record in games where the player served second. */
+  secondServe: WinLoss;
 };
+
+export type WinLoss = { wins: number; losses: number };
 
 /**
  * Builds the leaderboard from singles games. `games` must be in the order
@@ -28,6 +34,7 @@ export function buildLeaderboard(games: SinglesGameResult[]): LeaderboardRow[] {
     playerId: string,
     pointsFor: number,
     pointsAgainst: number,
+    servedFirst: boolean,
   ) => {
     let row = rows.get(playerId);
     if (!row) {
@@ -40,16 +47,21 @@ export function buildLeaderboard(games: SinglesGameResult[]): LeaderboardRow[] {
         pointsAgainst: 0,
         pointDifferential: 0,
         streak: 0,
+        firstServe: { wins: 0, losses: 0 },
+        secondServe: { wins: 0, losses: 0 },
       };
       rows.set(playerId, row);
     }
 
     const won = pointsFor > pointsAgainst;
+    const serveRecord = servedFirst ? row.firstServe : row.secondServe;
     if (won) {
       row.wins += 1;
+      serveRecord.wins += 1;
       row.streak = row.streak > 0 ? row.streak + 1 : 1;
     } else {
       row.losses += 1;
+      serveRecord.losses += 1;
       row.streak = row.streak < 0 ? row.streak - 1 : -1;
     }
     row.pointsFor += pointsFor;
@@ -57,11 +69,17 @@ export function buildLeaderboard(games: SinglesGameResult[]): LeaderboardRow[] {
   };
 
   for (const game of games) {
-    record(game.firstServerId, game.firstServerPoints, game.secondServerPoints);
+    record(
+      game.firstServerId,
+      game.firstServerPoints,
+      game.secondServerPoints,
+      true,
+    );
     record(
       game.secondServerId,
       game.secondServerPoints,
       game.firstServerPoints,
+      false,
     );
   }
 
@@ -83,6 +101,11 @@ export function buildLeaderboard(games: SinglesGameResult[]): LeaderboardRow[] {
 /** 0.739, 1.000 */
 export function formatWinPct(winPct: number): string {
   return winPct.toFixed(3);
+}
+
+/** 10-2 */
+export function formatRecord({ wins, losses }: WinLoss): string {
+  return `${wins}-${losses}`;
 }
 
 /** +5, -3, 0 */
