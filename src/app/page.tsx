@@ -1,18 +1,45 @@
+import LeaderboardFilterForm from "@/components/LeaderboardFilterForm";
 import Cell from "@/components/table/Cell";
 import Header from "@/components/table/Header";
 import { getSinglesLeaderboard } from "@/db/queries/leaderboard";
+import { describeDateRange, parseLeaderboardFilters } from "@/lib/filters";
 import { formatRecord, formatSigned, formatWinPct } from "@/lib/leaderboard";
+import { Suspense } from "react";
 
-const Home = async () => {
-  const rows = await getSinglesLeaderboard();
-
+const Home = ({ searchParams }: PageProps<"/">) => {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
       <h1 className="text-3xl font-bold tracking-tight">Leaderboard</h1>
-      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Singles</p>
+
+      {/* The filters come from the URL, so everything that depends on them
+          streams in behind this boundary. */}
+      <Suspense
+        fallback={
+          <p className="mt-8 text-zinc-500 dark:text-zinc-400">Loading…</p>
+        }
+      >
+        <Leaderboard searchParams={searchParams} />
+      </Suspense>
+    </main>
+  );
+};
+
+const Leaderboard = async ({
+  searchParams,
+}: Pick<PageProps<"/">, "searchParams">) => {
+  const filters = parseLeaderboardFilters(await searchParams);
+  const rows = await getSinglesLeaderboard(filters.from, filters.to);
+
+  return (
+    <>
+      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        Singles · {describeDateRange(filters)}
+      </p>
+
+      <LeaderboardFilterForm filters={filters} />
 
       {rows.length === 0 ? (
-        <p className="mt-8 text-zinc-500 dark:text-zinc-400">No games yet.</p>
+        <p className="mt-8 text-zinc-500 dark:text-zinc-400">No games found.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
           <table className="w-full text-sm whitespace-nowrap">
@@ -61,7 +88,7 @@ const Home = async () => {
           </table>
         </div>
       )}
-    </main>
+    </>
   );
 };
 
